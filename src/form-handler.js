@@ -15,10 +15,12 @@ export async function handleForm(page, config) {
       
       if (isRadioButton) {
         // Radio button: chỉ chọn 1 option
-        const selectedOption = pickSingleOption(options);
+        const selectedOption = pickSingleOption(options, config.radioExcludeFirstN ?? 0);
         if (selectedOption) {
           await selectedOption.click();
-          console.log(`[Radio] Selected 1 out of ${options.length} options`);
+          console.log(`[Radio] Selected 1 out of ${options.length} options (exclude first ${config.radioExcludeFirstN ?? 0})`);
+        } else {
+          console.log(`[Radio] Skipped: no available option after excluding first ${config.radioExcludeFirstN ?? 0}`);
         }
       } else {
         // Checkbox: chọn 1-n options

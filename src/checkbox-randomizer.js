@@ -1,8 +1,13 @@
-// Chọn 1 option duy nhất (cho radio button)
-export function pickSingleOption(elements) {
+// Chọn 1 option duy nhất (cho radio button), có thể bỏ qua n option đầu tiên
+export function pickSingleOption(elements, excludeFirstN = 0) {
   if (elements.length === 0) return null;
-  const randomIndex = Math.floor(Math.random() * elements.length);
-  return elements[randomIndex];
+
+  const skipCount = Math.max(0, Math.floor(excludeFirstN));
+  const candidateOptions = elements.slice(skipCount);
+  if (candidateOptions.length === 0) return null;
+
+  const randomIndex = Math.floor(Math.random() * candidateOptions.length);
+  return candidateOptions[randomIndex];
 }
 
 // Chọn 1-n options (cho checkbox)
@@ -13,5 +18,5 @@ export function pickMultipleOptions(elements) {
   // Randomly pick 1 to numOptions
   const numToPick = Math.floor(Math.random() * numOptions) + 1;
   const shuffled = [...elements].sort(() => 0.5 - Math.random());
-  return shuffled.slice(1, numToPick);
+  return shuffled.slice(0, numToPick);
 }

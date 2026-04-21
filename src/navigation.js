@@ -14,7 +14,7 @@ export async function clickNextOrSubmit(page) {
 
 export async function clickSubmit(page) {
   // Try submit buttons
-  const submitSelectors = ['text="Submit"', 'text="Gửi"', '[jsname="ksKsZd"]', '[jsname="M2UYVd"]', '[class="NPEfkd RveJvd snByac"]'];
+  const submitSelectors = ['text="Submit"', 'text="Gửi"', '[jsname="ksKsZd"]', '[jsname="M2UYVd"]', '[class="NPEfkd RveJvd snByac "]'];
   for (const selector of submitSelectors) {
     try {
       await page.click(selector);

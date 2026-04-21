@@ -13,5 +13,5 @@ export function pickMultipleOptions(elements) {
   // Randomly pick 1 to numOptions
   const numToPick = Math.floor(Math.random() * numOptions) + 1;
   const shuffled = [...elements].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, numToPick);
+  return shuffled.slice(1, numToPick);
 }

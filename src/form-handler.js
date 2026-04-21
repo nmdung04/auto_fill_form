@@ -16,8 +16,10 @@ export async function handleForm(page, config) {
       if (isRadioButton) {
         // Radio button: chỉ chọn 1 option
         const selectedOption = pickSingleOption(options);
-        await selectedOption.click();
-        console.log(`[Radio] Selected 1 out of ${options.length} options`);
+        if (selectedOption) {
+          await selectedOption.click();
+          console.log(`[Radio] Selected 1 out of ${options.length} options`);
+        }
       } else {
         // Checkbox: chọn 1-n options
         const toClick = pickMultipleOptions(options);
@@ -34,16 +36,19 @@ export async function handleForm(page, config) {
 // Detect if input group is radio button or checkbox
 async function isRadioButtonGroup(groupElement) {
   try {
-    // Check if has aria-label hoặc parent có type indicator
+    // Google Forms render theo ARIA role, không phải input[type].
+    const radioOption = await groupElement.$('[role="radio"]');
+    if (radioOption) return true;
+
+    const checkboxOption = await groupElement.$('[role="checkbox"]');
+    if (checkboxOption) return false;
+
+    // Fallback cho các biến thể DOM: đọc role trực tiếp trên option.
     const firstOption = await groupElement.$('[class="nWQGrd zwllIb"]');
     if (!firstOption) return false;
-    
-    // Get parent to find input type
-    const inputElement = await firstOption.$('input');
-    if (!inputElement) return false;
-    
-    const inputType = await inputElement.evaluate(el => el.getAttribute('type'));
-    return inputType === 'radio';
+
+    const optionRole = await firstOption.evaluate(el => el.getAttribute('role'));
+    return optionRole === 'radio';
   } catch {
     // Nếu không detect được, mặc định là checkbox
     return false;

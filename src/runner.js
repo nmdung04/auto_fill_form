@@ -28,7 +28,14 @@ export async function runFormSubmission(browser, url, config, runNumber) {
       } catch {
         // No next button, assume it's the submit page
         await clickSubmit(page);
-        console.log(`[Run ${runNumber}] Form submitted successfully`);
+        // Sau khi click submit, chờ xác nhận gửi thành công
+        try {
+          // Thường Google Form sẽ hiện trang cảm ơn với class="vHW8K"
+          await page.waitForSelector('.vHW8K, .freebirdFormviewerViewResponseConfirmationMessage', { timeout: 10000 });
+          console.log(`[Run ${runNumber}] Form submitted and confirmation detected.`);
+        } catch {
+          console.warn(`[Run ${runNumber}] Đã click gửi nhưng KHÔNG phát hiện xác nhận gửi thành công!`);
+        }
         break;
       }
     }

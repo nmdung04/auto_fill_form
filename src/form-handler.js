@@ -1,0 +1,56 @@
+import { pickSingleOption, pickMultipleOptions } from './checkbox-randomizer.js';
+
+export async function handleForm(page, config) {
+  // Wait for checkboxes/radio to load
+  await page.waitForSelector('[class="nWQGrd zwllIb"]', { timeout: 10000 });
+
+  // Get all question groups
+  const questionGroups = await page.$$('[role="presentation"]');
+
+  for (const group of questionGroups) {
+    const options = await group.$$('[class="nWQGrd zwllIb"]');
+    if (options.length > 0) {
+      // Detect if it's radio button or checkbox
+      const isRadioButton = await isRadioButtonGroup(group);
+      
+      if (isRadioButton) {
+        // Radio button: chỉ chọn 1 option
+        const selectedOption = pickSingleOption(options);
+        await selectedOption.click();
+        console.log(`[Radio] Selected 1 out of ${options.length} options`);
+      } else {
+        // Checkbox: chọn 1-n options
+        const toClick = pickMultipleOptions(options);
+        console.log(`[Checkbox] Selected ${toClick.length} out of ${options.length} options`);
+        for (const cb of toClick) {
+          await cb.click();
+          await delay(config.minDelay, config.maxDelay);
+        }
+      }
+    }
+  }
+}
+
+// Detect if input group is radio button or checkbox
+async function isRadioButtonGroup(groupElement) {
+  try {
+    // Check if has aria-label hoặc parent có type indicator
+    const firstOption = await groupElement.$('[class="nWQGrd zwllIb"]');
+    if (!firstOption) return false;
+    
+    // Get parent to find input type
+    const inputElement = await firstOption.$('input');
+    if (!inputElement) return false;
+    
+    const inputType = await inputElement.evaluate(el => el.getAttribute('type'));
+    return inputType === 'radio';
+  } catch {
+    // Nếu không detect được, mặc định là checkbox
+    return false;
+  }
+}
+
+function delay(min, max) {
+  const ms = Math.random() * (max - min) + min;
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

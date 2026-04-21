@@ -1,0 +1,9 @@
+{
+  "url": "https://forms.gle/eoHXG69vRtnHgVR3A",
+  "headless": false,
+  "minDelay": 500,
+  "maxDelay": 1000,
+  "runs": 20
+
+}
+

@@ -4,7 +4,8 @@
   "minDelay": 2000,
   "maxDelay": 3500,
   "runs": 290,
-  "radioExcludeFirstN": 1
+  "radioExcludeFirstN": 1,
+  "radioExcludeOnlyWhenOptionsCount": 5
 
 }
 
